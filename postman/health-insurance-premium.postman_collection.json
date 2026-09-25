@@ -1,0 +1,193 @@
+{
+  "info": {
+    "_postman_id": "a9b8d8d1-fede-4f96-9ebd-f5d1e9f6e128",
+    "name": "Health Insurance Premium API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58511183",
+    "_collection_link": "https://go.postman.co/collection/58511183-a9b8d8d1-fede-4f96-9ebd-f5d1e9f6e128?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Health check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\npm.test(\"Responds in under 2s\", () => pm.expect(pm.response.responseTime).to.be.below(2000));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/ping",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "ping"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Predict - valid customer",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\n\r\nconst body = pm.response.json();\r\n\r\npm.test(\"Premium is a positive integer in INR\", () => {\r\n  pm.expect(body.predicted_premium).to.be.a(\"number\").and.to.be.above(0);\r\n  pm.expect(body.currency).to.eql(\"INR\");\r\n});\r\n\r\npm.environment.set(\"baseline_premium\", body.predicted_premium);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 35,\r\n  \"number_of_dependants\": 2,\r\n  \"income_lakhs\": 12,\r\n  \"genetical_risk\": 2,\r\n  \"insurance_plan\": \"Gold\",\r\n  \"employment_status\": \"Salaried\",\r\n  \"gender\": \"Male\",\r\n  \"marital_status\": \"Married\",\r\n  \"bmi_category\": \"Normal\",\r\n  \"smoking_status\": \"No Smoking\",\r\n  \"region\": \"Northwest\",\r\n  \"medical_history\": \"No Disease\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/predict_premium",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict_premium"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Predict - smoker costs more",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));\r\n\r\npm.test(\"A regular smoker is quoted more than a non-smoker\", () => {\r\n  const baseline = Number(pm.environment.get(\"baseline_premium\"));\r\n  pm.expect(pm.response.json().predicted_premium).to.be.above(baseline);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 35,\r\n  \"number_of_dependants\": 2,\r\n  \"income_lakhs\": 12,\r\n  \"genetical_risk\": 2,\r\n  \"insurance_plan\": \"Gold\",\r\n  \"employment_status\": \"Salaried\",\r\n  \"gender\": \"Male\",\r\n  \"marital_status\": \"Married\",\r\n  \"bmi_category\": \"Normal\",\r\n  \"smoking_status\": \"Regular\",\r\n  \"region\": \"Northwest\",\r\n  \"medical_history\": \"No Disease\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/predict_premium",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict_premium"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Predict - invalid smoking status",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Unknown category is rejected, not silently scored\", () =>\r\n  pm.response.to.have.status(422));\r\n\r\npm.test(\"Error names the offending field\", () => {\r\n  const detail = JSON.stringify(pm.response.json().detail);\r\n  pm.expect(detail).to.include(\"smoking_status\");\r\n  pm.expect(detail).to.include(\"literal_error\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 35,\r\n  \"number_of_dependants\": 2,\r\n  \"income_lakhs\": 12,\r\n  \"genetical_risk\": 2,\r\n  \"insurance_plan\": \"Gold\",\r\n  \"employment_status\": \"Salaried\",\r\n  \"gender\": \"Male\",\r\n  \"marital_status\": \"Married\",\r\n  \"bmi_category\": \"Normal\",\r\n  \"smoking_status\": \"Sometimes\",\r\n  \"region\": \"Northwest\",\r\n  \"medical_history\": \"No Disease\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/predict_premium",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict_premium"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Predict - age below minimum",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Age below the minimum is rejected\", () => pm.response.to.have.status(422));\r\n\r\npm.test(\"Error names the violated constraint\", () => {\r\n  const detail = JSON.stringify(pm.response.json().detail);\r\n  pm.expect(detail).to.include(\"age\");\r\n  pm.expect(detail).to.include(\"greater_than_equal\");\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"age\": 15,\r\n  \"number_of_dependants\": 2,\r\n  \"income_lakhs\": 12,\r\n  \"genetical_risk\": 2,\r\n  \"insurance_plan\": \"Gold\",\r\n  \"employment_status\": \"Salaried\",\r\n  \"gender\": \"Male\",\r\n  \"marital_status\": \"Married\",\r\n  \"bmi_category\": \"Normal\",\r\n  \"smoking_status\": \"No Smoking\",\r\n  \"region\": \"Northwest\",\r\n  \"medical_history\": \"No Disease\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/predict_premium",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "predict_premium"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    }
+  ]
+}
