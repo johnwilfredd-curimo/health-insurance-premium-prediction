@@ -51,21 +51,21 @@ Reaching it took three passes through the lifecycle, not one.
 
 ### Why three passes
 
-**Pass 1 — the average hid the failure.** The first model scored well on R² but missed the 10% band on
+**Pass 1: the average hid the failure.** The first model scored well on R² but missed the 10% band on
 roughly 30% of customers. Every one of those is a real person overcharged or undercharged.
 
-**Pass 2 — error analysis found where.** Plotting residuals against features showed the errors weren't
+**Pass 2: error analysis found where.** Plotting residuals against features showed the errors weren't
 spread evenly; they were concentrated almost entirely in customers aged 25 and under. Splitting into two
-models fixed the over-25s immediately — 0.3% extreme errors — and made the under-25 problem worse in
+models fixed the over-25s immediately (0.3% extreme errors) and made the under-25 problem worse in
 isolation: **73%**.
 
-**Pass 3 — the model asked for a feature.** A 73% failure rate on one segment isn't a tuning problem,
+**Pass 3: the model asked for a feature.** A 73% failure rate on one segment isn't a tuning problem,
 it's a missing-information problem: nothing in the dataset explained young customers' premiums. That
 finding went back to the business as a data request, and a `genetical_risk` field came back. Retraining
 the young-segment model with it dropped extreme errors from 73% to **2%**.
 
 The third pass is the point of this project. The useful output of a failing model was **a specific,
-justified data request** — not a different algorithm.
+justified data request**, not a different algorithm.
 
 ## Architecture
 
@@ -78,7 +78,7 @@ src/prediction.py   ← loads artifacts, builds the feature vector, predicts
 ```
 
 Both import the same `predict()`. There is no second copy of the preprocessing logic, so the demo and the
-API cannot drift apart — the Postman suite asserts they agree.
+API cannot drift apart. The Postman suite asserts they agree.
 
 The model is **segmented by age**: `LinearRegression` for ages 18–25, `XGBRegressor` for 26+, each with
 its own fitted `MinMaxScaler`. `src/prediction.py` routes on age and picks the matching pair.
@@ -151,7 +151,7 @@ npx newman run postman/health-insurance-premium.postman_collection.json \
 ## Attribution
 
 Project brief, dataset and baseline approach from the Codebasics course *Master Machine Learning for Data
-Science & AI* (codebasics.io). This repository is my own end-to-end rebuild — the lifecycle structure,
+Science & AI* (codebasics.io). This repository is my own end-to-end rebuild: the lifecycle structure,
 analysis write-up, serving layer, API, test suite and deployment are mine.
 
 Self-directed learning project; not commissioned client work. "Shield Insurance" and "AtliQ AI" are the
