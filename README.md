@@ -1,20 +1,10 @@
----
-title: Health Insurance Premium API
-emoji: 🏥
-colorFrom: green
-colorTo: blue
-sdk: docker
-app_port: 7860
-pinned: false
----
-
 # Health Insurance Premium Prediction
 
 Predicts the annual health insurance premium to quote a customer, so an agent can give a number during
 the first conversation instead of waiting on an underwriter.
 
-**[Live demo](https://<your-subdomain>.streamlit.app)** ·
-**[API docs](https://<your-hf-username>-health-insurance-api.hf.space/docs)** ·
+**[Live demo](https://health-insurance-premium-jwc.streamlit.app/)** ·
+**[API docs](https://insurance-api.srv1818955.hstgr.cloud/docs)** ·
 **[Notebook](https://nbviewer.org/github/johnwilfredd-curimo/health-insurance-premium-prediction/blob/main/notebooks/health_insurance_premium_prediction.ipynb)**
 
 ---
@@ -88,7 +78,7 @@ health-insurance-premium-prediction/
 ├─ streamlit_app.py          Streamlit entrypoint
 ├─ src/prediction.py         shared prediction module
 ├─ api/main.py               FastAPI service
-├─ postman/                  collection + environment
+├─ postman/                  Postman collection + run screenshot
 ├─ artifacts/                2 models + 2 scalers (.joblib)
 ├─ data/                     4 .xlsx datasets, one per iteration
 ├─ notebooks/                the full end-to-end notebook
