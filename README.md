@@ -1,5 +1,7 @@
 # Health Insurance Premium Prediction
 
+[![API tests](https://github.com/johnwilfredd-curimo/health-insurance-premium-prediction/actions/workflows/api-tests.yml/badge.svg)](https://github.com/johnwilfredd-curimo/health-insurance-premium-prediction/actions/workflows/api-tests.yml)
+
 Predicts the annual health insurance premium to quote a customer, so an agent can give a number during
 the first conversation instead of waiting on an underwriter.
 
