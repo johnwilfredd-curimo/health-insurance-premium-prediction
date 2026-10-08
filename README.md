@@ -82,7 +82,7 @@ health-insurance-premium-prediction/
 ├─ api/main.py               FastAPI service
 ├─ postman/                  Postman collection + run screenshot
 ├─ artifacts/                2 models + 2 scalers (.joblib)
-├─ data/                     4 .xlsx datasets, one per iteration
+├─ data/                     course dataset, not committed (see Data)
 ├─ notebooks/                the full end-to-end notebook
 └─ Dockerfile                serves the API on port 7860
 ```
@@ -120,7 +120,7 @@ curl -X POST http://127.0.0.1:8000/predict_premium \
 { "predicted_premium": 24567, "currency": "INR" }
 ```
 
-To re-run the notebook: `pip install -r requirements-dev.txt`, then run it from the `notebooks/` folder.
+To re-run the notebook: `pip install -r requirements-dev.txt`, add the dataset (see [Data](#data)), then run it from the `notebooks/` folder.
 
 ## API tests
 
@@ -140,11 +140,19 @@ npx newman run postman/health-insurance-premium.postman_collection.json \
     --env-var base_url=https://<host>
 ```
 
+## Data
+
+The dataset is not in this repository. It is part of the exercise files of the Codebasics course, and Codebasics does not permit redistributing them.
+
+To re-run the notebook, enrol in the course, download the project's exercise files, and place the two source workbooks in `data/` at the repo root:
+
+    data/premiums.xlsx
+    data/premiums_young_with_gr.xlsx
+
+The notebook writes `premiums_young.xlsx` and `premiums_rest.xlsx` into the same folder itself. The live demo and the API need none of this: they load only the trained models in `artifacts/`.
+
 ## Attribution
 
-Project brief, dataset and baseline approach from the Codebasics course *Master Machine Learning for Data
-Science & AI* (codebasics.io). This repository is my own end-to-end rebuild: the lifecycle structure,
-analysis write-up, serving layer, API, test suite and deployment are mine.
+Project brief, dataset and baseline approach from the Codebasics course *Master Machine Learning for Data Science & AI* (codebasics.io). This repository is my own end-to-end rebuild: the lifecycle structure, analysis write-up, serving layer, API, test suite and deployment are mine.
 
-Self-directed learning project; not commissioned client work. "Shield Insurance" and "AtliQ AI" are the
-course's fictional companies.
+Self-directed learning project; not commissioned client work. The scenario is the course's: "Shield Insurance" is the client named in its brief, and AtliQ is a real technology consultancy, co-founded by the course instructor, which the course casts as the service provider. I have no affiliation with either, and none of this work was done for them.
